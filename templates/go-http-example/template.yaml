@@ -1,0 +1,15 @@
+name: go-http-example
+data_schema:
+  properties:
+    GoVersion:
+      type: "string"
+      required: true
+    ModuleName:
+      type: "string"
+      required: true
+    ProjectName:
+      type: "string"
+      required: true
+    DefaultHttpPort:
+      type: "string"
+      required: false
