@@ -7,6 +7,7 @@ import (
 
 type Config struct {
 	TemplatesPath string
+	WD            string
 }
 
 var (
@@ -26,6 +27,7 @@ func templatesPath() string {
 func Load() *Config {
 	c := Config{
 		TemplatesPath: templatesPath(),
+		WD:            wd,
 	}
 
 	return &c

@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
 	"text/template"
 
 	"github.com/coryjamescrook/templater/internal/config"
@@ -77,6 +78,8 @@ func (t *Template) CollectData() {
 func (t Template) Build(buildDir string) {
 	fsys := os.DirFS(t.path)
 	log.Printf("fsys: %s\n", fsys)
+	log.Printf("conf: %s", conf)
+	log.Printf("buildDir: %s", buildDir)
 
 	// load all the files recursively in the template directory
 	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
@@ -102,11 +105,10 @@ func (t Template) Build(buildDir string) {
 		}
 
 		// setup files
-		// ogFilePath := filepath.Join(path, d.Name())
-		ogFilePath := d.Name()
-		// newFilePath := strings.Replace(ogFilePath, path, buildDir, 1)
-		// log.Printf("og file path: %s\nnew file path: %s\n", ogFilePath, newFilePath)
-		newFilePath := strings.Replace(ogFilePath, ".template", "", 1)
+		templateFilePath := filepath.Join(t.path, d.Name())
+
+		newFilePath := strings.Replace(templateFilePath, ".template", "", 1)
+		newFilePath = strings.Replace(newFilePath, t.path, buildDir, 1)
 		log.Printf("transformed new file path: %s\n", newFilePath)
 
 		if _, err := os.Stat(newFilePath); os.IsNotExist(err) {
@@ -123,7 +125,6 @@ func (t Template) Build(buildDir string) {
 
 		// do templating here
 		tmpl := template.New(t.def.Name)
-		templateFilePath := filepath.Join(t.path, d.Name())
 		log.Printf("opening template file path: %s\n", templateFilePath)
 		templateFile, err := os.ReadFile(templateFilePath)
 		if err != nil {
@@ -141,9 +142,6 @@ func (t Template) Build(buildDir string) {
 	if err != nil {
 		panic(err)
 	}
-
-	// and each file should be rendered using text/template
-	// write each file to the fs at the buildDir location
 }
 
 type TemplateDefDataSchemaProperty struct {
