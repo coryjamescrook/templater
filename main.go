@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 
@@ -8,25 +9,30 @@ import (
 )
 
 func main() {
-	args := os.Args[1:]
-	templateName := args[0]
-	if templateName == "" {
-		panic("you must provide a valid template name to build from")
+	templateName := flag.String("t", "", "the name of the template to build from")
+	outDir := flag.String("o", "", "the path to the output directory to build the template")
+
+	flag.Parse()
+
+	if templateName == nil || *templateName == "" {
+		panic("`template name` is required")
 	}
 
-	outDir := args[1]
-	if outDir == "" {
-		panic("you must provide a valid output directory to build to")
+	if outDir == nil || *outDir == "" {
+		panic("`output directory` is required")
 	}
 
 	tr := templaters.Templater{}
 
-	log.Printf("Initializing template: `%s`\n", templateName)
-	t := tr.CreateTemplate(templateName)
+	log.Printf("Initializing template: `%s`\n", *templateName)
+	t := tr.CreateTemplate(*templateName)
 
 	log.Println("Collecting template data...")
 	t.CollectData()
 
-	log.Printf("Beginning template build to `%s`\n", outDir)
-	t.Build(outDir)
+	log.Printf("Beginning template build to `%s`\n", *outDir)
+	t.Build(*outDir)
+
+	log.Println("Template build successful!")
+	os.Exit(0)
 }

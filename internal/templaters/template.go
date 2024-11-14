@@ -65,8 +65,21 @@ func (t *Template) CollectData() {
 	for propName, propDef := range t.def.DataSchema.Properties {
 		// collect input for value
 		var input string
-		fmt.Printf("Enter %s value for %s: ", propDef.Type, propName)
+		inputMsg := fmt.Sprintf("Enter %s value for %s", propDef.Type, propName)
+		if propDef.Default != "" {
+			inputMsg += fmt.Sprintf(" (default: %s)", propDef.Default)
+		}
+		inputMsg += ": "
+		fmt.Print(inputMsg)
 		fmt.Scanln(&input)
+
+		if input == "" && propDef.Default != "" {
+			input = propDef.Default
+		}
+
+		if propDef.Required && input == "" {
+			log.Fatalf("`%s` is required for the template: %s", propName, t.def.Name)
+		}
 
 		// set this value for the template data
 		d[propName] = transformInput(propDef.Type, input)
@@ -77,13 +90,9 @@ func (t *Template) CollectData() {
 
 func (t Template) Build(buildDir string) {
 	fsys := os.DirFS(t.path)
-	log.Printf("fsys: %s\n", fsys)
-	log.Printf("conf: %s", conf)
-	log.Printf("buildDir: %s", buildDir)
 
 	// load all the files recursively in the template directory
 	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
-		log.Printf("WALK DIR inter:\npath: %s\nfilename: %s\n", path, d.Name())
 		// return err if there is an error
 		if err != nil {
 			return err
@@ -109,10 +118,12 @@ func (t Template) Build(buildDir string) {
 
 		newFilePath := strings.Replace(templateFilePath, ".template", "", 1)
 		newFilePath = strings.Replace(newFilePath, t.path, buildDir, 1)
-		log.Printf("transformed new file path: %s\n", newFilePath)
+		newFilePath, _ = filepath.Abs(newFilePath)
 
-		if _, err := os.Stat(newFilePath); os.IsNotExist(err) {
-			os.MkdirAll(newFilePath, os.ModePerm)
+		newFileDir := strings.Replace(newFilePath, filepath.Base(newFilePath), "", 1)
+
+		if _, err := os.Stat(newFileDir); os.IsNotExist(err) {
+			os.MkdirAll(newFileDir, 0700)
 		}
 
 		f, err := os.Create(newFilePath)
@@ -125,7 +136,6 @@ func (t Template) Build(buildDir string) {
 
 		// do templating here
 		tmpl := template.New(t.def.Name)
-		log.Printf("opening template file path: %s\n", templateFilePath)
 		templateFile, err := os.ReadFile(templateFilePath)
 		if err != nil {
 			return err
@@ -135,6 +145,8 @@ func (t Template) Build(buildDir string) {
 		if err != nil {
 			return err
 		}
+
+		fileWriter.Flush()
 
 		return nil
 	})
@@ -147,6 +159,7 @@ func (t Template) Build(buildDir string) {
 type TemplateDefDataSchemaProperty struct {
 	Type     string `yaml:"type"`
 	Required bool   `yaml:"required"`
+	Default  string `yaml:"default"`
 }
 
 type TemplateDefDataSchema struct {

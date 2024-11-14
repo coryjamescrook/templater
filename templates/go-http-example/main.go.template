@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	defaultHttpPort string = "{{ .HttpPort }}"
+	defaultHttpPort string = "{{ .DefaultHttpPort }}"
 )
 
 func main() {

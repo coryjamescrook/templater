@@ -4,12 +4,16 @@ data_schema:
     GoVersion:
       type: "string"
       required: true
+      default: "1.22.6"
     ModuleName:
       type: "string"
       required: true
+      default: "github.com/coryjamescrook/templater"
     ProjectName:
       type: "string"
       required: true
+      default: "templater"
     DefaultHttpPort:
       type: "string"
-      required: false
+      required: true
+      default: "8080"
