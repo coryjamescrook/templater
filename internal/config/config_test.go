@@ -14,38 +14,65 @@ func TestCleanup(t *testing.T) {
 }
 
 func TestLoad(t *testing.T) {
+	t.Parallel()
 	subject := Load
 
-	t.Run("With defaults", func(t *testing.T) {
-		conf := subject()
+	tests := []struct {
+		name               string
+		setupFunc          func()
+		expectTemplatePath func(conf *Config) bool
+		expectDefFileName  func(conf *Config) bool
+	}{
+		{
+			name:      "With defaults",
+			setupFunc: nil,
+			expectTemplatePath: func(conf *Config) bool {
+				rx := regexp.MustCompile("templates$")
+				return rx.Match([]byte(conf.TemplatesPath))
+			},
+			expectDefFileName: func(conf *Config) bool {
+				return conf.TemplateDefFileName == "template.yaml"
+			},
+		},
+		{
+			name: "With ENV Variable overrides",
+			setupFunc: func() {
+				os.Setenv(TemplatesPathEnvVar, "some/path/here/templates")
+				os.Setenv(TemplateDefFilenameEnvVar, "manifest.yaml")
+			},
+			expectTemplatePath: func(conf *Config) bool {
+				return conf.TemplatesPath == "some/path/here/templates"
+			},
+			expectDefFileName: func(conf *Config) bool {
+				return conf.TemplateDefFileName == "manifest.yaml"
+			},
+		},
+	}
 
-		rx := regexp.MustCompile("templates$")
-		templatePathEndsCorrectly := rx.Match([]byte(conf.TemplatesPath))
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			// run setup if necessary
+			if test.setupFunc != nil {
+				test.setupFunc()
+			}
 
-		if !templatePathEndsCorrectly {
-			t.Fail()
-		}
+			conf := subject()
+			if test.expectTemplatePath == nil {
+				t.Log("expected a `expectDefFileName` expectation function")
+				t.FailNow()
+			}
+			if test.expectDefFileName == nil {
+				t.Log("expected a `expectDefFileName` expectation function")
+				t.FailNow()
+			}
 
-		if conf.TemplateDefFileName != "template.yaml" {
-			t.Fail()
-		}
-	})
+			if !test.expectTemplatePath(conf) {
+				t.Fail()
+			}
 
-	t.Run("With ENV Variable overrides", func(t *testing.T) {
-		tp := "some/path/here/templates"
-		os.Setenv(TemplatesPathEnvVar, tp)
-
-		td := "manifest.yaml"
-		os.Setenv(TemplateDefFilenameEnvVar, td)
-
-		conf := subject()
-
-		if conf.TemplatesPath != tp {
-			t.Fail()
-		}
-
-		if conf.TemplateDefFileName != td {
-			t.Fail()
-		}
-	})
+			if !test.expectDefFileName(conf) {
+				t.Fail()
+			}
+		})
+	}
 }
