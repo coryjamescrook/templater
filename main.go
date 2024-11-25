@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/coryjamescrook/templater/internal/templaters"
+	"github.com/coryjamescrook/templater/internal/template"
 )
 
 func main() {
@@ -22,10 +22,8 @@ func main() {
 		panic("`output directory` is required")
 	}
 
-	tr := templaters.Templater{}
-
 	log.Printf("Initializing template: `%s`\n", *templateName)
-	t := tr.CreateTemplate(*templateName)
+	t := template.CreateTemplate(*templateName)
 
 	log.Println("Collecting template data...")
 	t.CollectData()

@@ -6,16 +6,20 @@ import (
 )
 
 type Config struct {
-	TemplatesPath string
-	WD            string
+	TemplatesPath       string
+	TemplateDefFileName string
 }
+
+const (
+	defaultTemplateDefFileName string = "template.yaml"
+)
 
 var (
 	wd, _                       = os.Getwd()
 	defaultTemplatesPath string = filepath.Join(wd, "templates")
 )
 
-func templatesPath() string {
+func loadTemplatesPath() string {
 	envVal := os.Getenv("TEMPLATES_PATH")
 	if envVal == "" {
 		return defaultTemplatesPath
@@ -24,10 +28,19 @@ func templatesPath() string {
 	return envVal
 }
 
+func loadTemplateDefFileName() string {
+	envVal := os.Getenv("TEMPLATE_DEF_FILENAME")
+	if envVal == "" {
+		return defaultTemplateDefFileName
+	}
+
+	return envVal
+}
+
 func Load() *Config {
 	c := Config{
-		TemplatesPath: templatesPath(),
-		WD:            wd,
+		TemplatesPath:       loadTemplatesPath(),
+		TemplateDefFileName: loadTemplateDefFileName(),
 	}
 
 	return &c
