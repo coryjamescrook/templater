@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/coryjamescrook/templater/internal/config"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type Template struct {
