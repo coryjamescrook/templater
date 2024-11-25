@@ -83,6 +83,36 @@ func main() {
 
 As you can see in the above example template file, we are accessing the template variables using the `.` notation inside of the `{{  }}` curly brackets. For more details on how to best use go's text templating, reference the [module documentation](https://pkg.go.dev/text/template).
 
+### Creating a new project from a template (basic usage)
+
+Once your repo is set up with a `templater` executable, and templates, you can use it to generate new projects. A basic usage can be seen as follows:
+
+```bash
+# navigate to your repo
+cd /your/repo/dir/here
+
+# create a new project from a template
+templater -t template-name -o /path/to/new/project-dir
+```
+
+This will prompt you to enter your template variable values as configured in your `template.yaml` file and create your new project.
+
+### Creating a new project from a template (advanced usage)
+
+For more advanced usage, you can set up your repo, and utilize the `templater` cli to customize parameters based on your repo. Let's say for example, you store your project templates in a directory named `proj-templs` and instead of using the default `template.yaml` filename, you prefer to use a filename named `manifest.yaml`. An example of usage can be seen here:
+
+```bash
+# navigate to your repo
+cd /your/repo/dir/here
+
+# create a new project from a template, using custom configuration
+TEMPLATES_PATH="./proj-templs" TEMPLATE_DEF_FILENAME="manifest.yaml" templater -t template-name -o /path/to/new/project-dir
+```
+
+This will setup your new project the same way as in the basic example above.
+
+Happy templating!
+
 ## Versioning
 
 We use [Semantic Versioning](http://semver.org/) for versioning. For the versions
