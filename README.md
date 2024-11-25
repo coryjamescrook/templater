@@ -4,7 +4,7 @@ A basic CLI tool for creating new projects with your own templates.
 
 ## Getting Started
 
-Copy the appropriate executable file from the `build` directory to the root of your templates repository.
+Copy the appropriate executable file from the `bin` directory to the root of your templates repository.
 
 If you wish to use the default configuration, your templates should be inside the `templates` directory, each template in its own subdirectory. Like so:
 
