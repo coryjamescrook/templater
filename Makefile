@@ -25,24 +25,30 @@ build-mac: build-darwin-amd64 build-darwin-arm64
 
 build-darwin-amd64:
 	env GOOS=darwin GOARCH=amd64 go build -v -o $(DARWIN_AMD64)
+	chmod +x $(DARWIN_AMD64)
 
 build-darwin-arm64:
 	env GOOS=darwin GOARCH=arm64 go build -v -o $(DARWIN_ARM64)
+	chmod +x $(DARWIN_ARM64)
 
 # Linux Builds
 build-linux: build-linux-amd64 build-linux-arm build-linux-arm64
 
 build-linux-amd64:
 	env GOOS=linux GOARCH=amd64 go build -v -o $(LINUX_AMD64)
+	chmod +x $(LINUX_AMD64)
 
 build-linux-arm:
 	env GOOS=linux GOARCH=arm go build -v -o $(LINUX_ARM)
+	chmod +x $(LINUX_ARM)
 
 build-linux-arm64:
 	env GOOS=linux GOARCH=arm64 go build -v -o $(LINUX_ARM64)
+	chmod +x $(LINUX_ARM64)
 
 # Windows Builds
 build-windows: build-windows-amd64
 
 build-windows-amd64:
 	env GOOS=windows GOARCH=amd64 go build -v -o $(WINDOWS_AMD64)
+	chmod +x $(WINDOWS_AMD64)
