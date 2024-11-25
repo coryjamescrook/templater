@@ -92,7 +92,7 @@ Once your repo is set up with a `templater` executable, and templates, you can u
 cd /your/repo/dir/here
 
 # create a new project from a template
-templater -t template-name -o /path/to/new/project-dir
+./templater -t template-name -o /path/to/new/project-dir
 ```
 
 This will prompt you to enter your template variable values as configured in your `template.yaml` file and create your new project.
@@ -106,7 +106,7 @@ For more advanced usage, you can set up your repo, and utilize the `templater` c
 cd /your/repo/dir/here
 
 # create a new project from a template, using custom configuration
-TEMPLATES_PATH="./proj-templs" TEMPLATE_DEF_FILENAME="manifest.yaml" templater -t template-name -o /path/to/new/project-dir
+TEMPLATES_PATH="./proj-templs" TEMPLATE_DEF_FILENAME="manifest.yaml" ./templater -t template-name -o /path/to/new/project-dir
 ```
 
 This will setup your new project the same way as in the basic example above.
