@@ -4,7 +4,21 @@ A basic CLI tool for creating new projects with your own templates.
 
 ## Getting Started
 
-Copy the appropriate executable file from the `bin` directory to the root of your templates repository.
+Copy the appropriate executable file from the `bin` directory to the root of your templates repository. This file will need permissions to run on your system. This is fairly simple, but can prevent the binary from running unless you follow the next steps:
+
+1. Modify the permissions on the `templater` binary:
+
+```bash
+chmod +x ./templater
+```
+
+2. Depending on your operating system, it may prevent you from running the file for security reasons. You will want to navigate to your security settings on your computer and allow it to run. For example, on MacOS - you need to navigate to `System Preferences > Security & Privacy > General` and in the section labelled `Allow apps downloaded from:`, it will show the `templater` app if you have tried running it. If you haven't tried executing it yet, try running it first like so:
+
+```bash
+./templater
+```
+
+And then it should show up there. You need to allow this in order to allow it to run on your system.
 
 If you wish to use the default configuration, your templates should be inside the `templates` directory, each template in its own subdirectory. Like so:
 
