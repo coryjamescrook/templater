@@ -12,6 +12,8 @@ type Config struct {
 
 const (
 	defaultTemplateDefFileName string = "template.yaml"
+	TemplatesPathEnvVar        string = "TEMPLATES_PATH"
+	TemplateDefFilenameEnvVar  string = "TEMPLATE_DEF_FILENAME"
 )
 
 var (
@@ -20,7 +22,7 @@ var (
 )
 
 func loadTemplatesPath() string {
-	envVal := os.Getenv("TEMPLATES_PATH")
+	envVal := os.Getenv(TemplatesPathEnvVar)
 	if envVal == "" {
 		return defaultTemplatesPath
 	}
@@ -29,7 +31,7 @@ func loadTemplatesPath() string {
 }
 
 func loadTemplateDefFileName() string {
-	envVal := os.Getenv("TEMPLATE_DEF_FILENAME")
+	envVal := os.Getenv(TemplateDefFilenameEnvVar)
 	if envVal == "" {
 		return defaultTemplateDefFileName
 	}
